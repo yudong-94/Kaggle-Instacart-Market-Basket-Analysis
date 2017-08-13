@@ -1,0 +1,256 @@
+
+```{r}
+library(ggplot2)
+library(readr)
+library(dplyr)
+```
+
+```{r}
+aisles = read.csv('aisles.csv')
+departments = read.csv('departments.csv')
+prior = read.csv('order_products__prior.csv')
+train = read.csv('order_products__train.csv')
+orders = read.csv('orders.csv')
+products = read.csv('products.csv')
+```
+
+```{r}
+head(aisles)
+head(departments)
+head(prior)
+head(train)
+head(orders)
+head(products)
+```
+
+```{r}
+orders$eval_set = as.factor(orders$eval_set)
+summary(orders)
+```
+
+## Order Level Analysis
+
+**What kind of orders is more likely to contain higher proportion of reorder items?**
+
+```{r}
+order_product = rbind(prior, train)
+order_reorder = order_product %>%
+    group_by(order_id) %>%
+    summarise(percentage_reorder = sum(reordered)/n())
+order_reorder = merge(orders, order_reorder)
+```
+
+```{r}
+dow_reorder = order_reorder %>%
+    group_by(order_dow) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(dow_reorder, aes(x = order_dow, y = avg_reorder)) +
+    geom_bar(stat = "identity")
+
+# Saturday is a little bit more likely to try new things;
+# while Monday people reorder more
+
+# just remember to transform to factors
+```
+
+```{r}
+time_reorder = order_reorder %>%
+    group_by(order_hour_of_day) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(time_reorder, aes(x = order_hour_of_day, y = avg_reorder)) +
+    geom_bar(stat = "identity")
+# From 5 to 10, people are more likely to reorder
+
+# set a category as 4-11
+```
+
+```{r}
+recency_reorder = order_reorder %>%
+    group_by(days_since_prior_order) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(recency_reorder, aes(
+        x = days_since_prior_order, y = avg_reorder)) +
+    geom_bar(stat = "identity")
+
+# if an order occurs with long recency, then it's less likely to have reorders
+# 0 - very high, 1-7 - increase, 8+ - decrease
+
+# add new variables: current_day (0/1), within-1-week (0/1)
+```
+
+```{r}
+seq_reorder = order_reorder %>%
+    group_by(order_number) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(seq_reorder, aes(
+        x = order_number, y = avg_reorder)) +
+    geom_bar(stat = "identity")
+# the more previous orders, the higher reorders proportion
+# but this is not linear
+ggplot(seq_reorder, aes(
+        x = log(order_number), y = avg_reorder)) +
+    geom_bar(stat = "identity")
+# kind of better
+
+# log the order_number
+```
+
+## Product Level Analysis
+
+**What kind of products are more likely to be reordered?**
+
+```{r}
+product_reorder = rbind(prior, train) %>%
+    group_by(product_id) %>%
+    summarise(percentage_reorder = sum(reordered)/n())
+product_reorder = merge(products, product_reorder)
+product_reorder = merge(product_reorder, aisles)
+product_reorder = merge(product_reorder, departments)
+```
+
+```{r}
+product_reorder %>%
+    arrange(-percentage_reorder)
+
+# Not matched much with dept pattern
+
+# assign product id with the percentile, based on reorder percentage
+```
+
+```{r}
+product_reorder$reorder_rank = ceiling(100* rank(product_reorder$percentage_reorder) / nrow(product_reorder))
+
+product_rank = select(product_reorder, product_id, reorder_rank)
+# but ther are 3 products' id do not appear in this mapping, assign them with default value 50
+products = merge(product_rank, products, all.y = TRUE)
+products$reorder_rank = ifelse(is.na(products$reorder_rank), 50, products$reorder_rank)
+
+# use this reorder_rank to category products
+```
+
+
+
+```{r}
+dept_reorder = product_reorder %>%
+    group_by(department) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(dept_reorder, aes(
+        x = department, y = avg_reorder)) +
+    geom_bar(stat = "identity") +
+    coord_flip()
+
+# very obvious differnces
+```
+
+```{r}
+aisle_reorder = product_reorder %>%
+    group_by(aisle) %>%
+    summarise(avg_reorder = mean(percentage_reorder))
+ggplot(aisle_reorder, aes(
+        x = aisle, y = avg_reorder)) +
+    geom_bar(stat = "identity") +
+    coord_flip()
+
+# very obvious differnces
+```
+
+## Dataset Preparation
+
+
+only include those user-id in train set to train the model.
+features - 
+    relate to product_id: product_rank, dept, aisle
+    relate to user_id: order_num, order_dow (factor), order_hour_of_day (4-11 or not), days_since_prior_order(add same_day, within_one_week)
+    relate to past history: prior_count
+
+create a unique mapping: user_id to last order_num, order_dow, ...
+(simply filter orders by train+test)
+merge it with the prior_count to create a train+test set with eval_set label remained. 
+merge the product info to it.
+then just split into two. all those in test set should have NA for reorder column
+
+```{r}
+product_train = filter(merged, eval_set == "train")
+product_prior = filter(merged, eval_set == "prior")
+
+product_train = product_train[product_train$reordered == 1,]
+
+
+prior_count2 = merge(prior_count, product_train,
+                     by.x = c("user_id", "product_id"),
+                     by.y = c("user_id", "product_id"),
+                     all.x = TRUE)
+prior_count2 = select(prior_count2, user_id, product_id, count, reordered)
+
+train_test = filter(orders, eval_set != "prior")
+prior_count2 = merge(prior_count2, train_test,
+                     by.x = "user_id", by.y = "user_id")
+prior_count2 = merge(prior_count2, products,
+                     by.x = "product_id", by.y = "product_id",
+                     all.x = TRUE)
+
+```
+
+```{r}
+prior_count2$product_name = NULL
+prior_count2$order_dow = as.factor(prior_count2$order_dow)
+prior_count2$peak_hour = ifelse(prior_count2$order_hour_of_day >= 4 & prior_count2$order_hour_of_day<= 11, 1, 0)
+prior_count2$same_day = 
+    ifelse(prior_count2$days_since_prior_order == 0, 1, 0)
+prior_count2$within_1week = 
+    ifelse(prior_count2$days_since_prior_order <= 7 & 
+               prior_count2$days_since_prior_order > 0, 1, 0)
+
+prior_count2$reorder_freq = prior_count2$count / prior_count2$order_number
+```
+
+```{r}
+prior_count2$order_number_log = log(prior_count2$order_number)
+
+prior_count2[is.na(prior_count2$reordered),]$reordered = 0
+
+dept_merged = merge(merged, products, 
+                    by.x = "product_id", by.y = "product_id")
+
+dept_reorder = dept_merged %>%
+    group_by(department_id) %>%
+    summarise(percentage_reorder = sum(reordered) / n())
+
+dept_reorder$reorder_rank = 
+    nrow(dept_reorder) - rank(dept_reorder$percentage_reorder)
+
+aisle_reorder = dept_merged %>%
+    group_by(aisle_id) %>%
+    summarise(percentage_reorder = sum(reordered) / n())
+
+aisle_reorder$reorder_rank = nrow(aisle_reorder) - rank(aisle_reorder$percentage_reorder)
+
+prior_count2 = merge(prior_count2, dept_reorder,
+                     by.x = "department_id", 
+                     by.y = "department_id")
+
+prior_count2 = merge(prior_count2, aisle_reorder,
+                     by.x = "aisle_id", 
+                     by.y = "aisle_id")
+
+
+prior_count2$reorder_rank_p = prior_count2$reorder_rank.x
+prior_count2$reorder_rank_d = prior_count2$reorder_rank.y
+prior_count2$reorder_rank_a = prior_count2$reorder_rank
+prior_count2$aisle_id = NULL
+prior_count2$department_id = NULL
+prior_count2$reorder_rank.x = NULL
+prior_count2$reorder_rank.y = NULL
+prior_count2$reorder_rank = NULL
+prior_count2$percentage_reorder.x = NULL
+prior_count2$percentage_reorder.y = NULL
+
+```
+
+
+```{r}
+train = filter(prior_count2, eval_set == "train")
+test = filter(prior_count2, eval_set == "test")
+write.csv(train, "train.csv")
+write.csv(test, "test.csv")
+```
