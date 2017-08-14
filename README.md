@@ -1,4 +1,4 @@
-# Kaggle-Instacart-Market-Basket-Analysis
+# Kaggle Instacart Market Basket Analysis
 individual effort for the Instacart Market Basket Analysis Competition on Kaggle
 
 link to the competition: https://www.kaggle.com/c/instacart-market-basket-analysis
