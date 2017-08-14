@@ -8,10 +8,10 @@ This is the first time I have worked on a Kaggle competition individually, and t
 
 The objective of this competition is to predict the products that a certaion user will reorder in his/her next order based on his/her order history and order pattern. Therefore, I defined it as a classification problem - predict whether a product that has been ordered by a user in the past will be reorderd in his/her next order or not. The classification problem nature is defined as following:
 
-**Label**: Whether reordered or not in the most recent order  
-**Training data**: Each (user, product) is a seperate row, with different features of this pair, and the reorder label  
-**Test data**: Again, each row is a (user, product) pair, and the users in the test set do not appear in the training set  
-**Features**: In the end, I have 57 features. The features list could be found here: [Features List](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/Features%20list.csv)
+**Label**: Whether reordered or not in the most recent order;  
+**Training data**: Each (user, product) is a seperate row, with different features of this pair, and the reorder label;  
+**Test data**: Again, each row is a (user, product) pair, and the users in the test set do not appear in the training set;  
+**Features**: In the end, I have 57 features. The features list could be found here: [Features List](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/Features%20list.csv).
 
 ## Documentation
 
