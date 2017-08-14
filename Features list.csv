@@ -1,0 +1,65 @@
+#,Col name,comment,category
+1,reordered,y-value,label
+2,eval_set,train/test,flag
+3,user_id,user id,DONOTUSE
+4,product_id,product id,DONOTUSE
+5,order_id,order id,DONOTUSE
+6,aisle_id,aisle id,DONOTUSE
+7,department_id,department id,DONOTUSE
+8,count,the number this product has been purchased by this user,"user, product"
+9,order_number,the number of orders for this user,user
+10,order_dow,the weekday of the order,order
+11,order_hour_of_day,the order hour,order
+12,days_since_prior_order,days since last order for this user,user
+13,reorder_rank,the reorder rank for this product,product
+14,peak_hour,whether it is the peak hour observed during eda - 4AM to 11AM,order
+15,recency,"whether it is made on the same day, within 1 week, or longer, compared to last order by this user",user
+16,reorder_freq,the frequency of reordering for this user,user
+17,order_number_log,log value of order_number,user
+18,percentage_reorder_d,the average reorder percentage for products from this department,department
+19,reorder_rank_d,the reorder rank for this department,department
+20,percentage_reorder_a,the average reorder percentage for products from this aisle,aisle
+21,reorder_rank_a,the reorder rank for this aisle,aisle
+22,avg_add_order,the average of this product's add to cart order,product
+23,avg_add_order_relative,relative average add to cart order (relative to the order size),product
+24,avg_interval,average order interval for a certain user,user
+25,days_since_last_purch,how many days since the user purcases this product last time,user
+26,relative_days_since_last_purch,days since last purchase / average purchase interval of the user,user
+27,sumdays,the sum days since a certain user's first purchase record,user
+28,percent_days_since_last_purch,days since last purchase / sum day of the user,user
+29,avg_order_size,the average order size of the user,user
+30,dow_reorder_freq,the reorder frequency of a certain weekday,time
+31,hod_reorder_freq,the reorder frequency of a certain hour of day,time
+32,favorite_dow,the day of week that this user purchased most,user
+33,on_favorite_dow,whether this order weekday is the user's favorite weekday,user
+34,favorite_hod,the hour of day that this user purchased most,user
+35,on_favorite_hod,whether this order hour is the user's favorite hour,user
+36,highest_reorder_dow,the weekday that this user reorders most,user
+37,on_highest_reorder_dow,whether this order weekday is the user's highest reorder frequency weekday,user
+38,highest_reorder_hod,the weekday that this user reorders most,user
+39,on_highest_reorder_hod,whether this order hour is the user's highest reorder frequency hour,user
+40,avg_reorder_inv,"average reorder interval for this product, this user (never reordered is marked as 999)","user, product"
+41,current_inv_avg_inv,days since last purchase / average reorder interval,"user, product"
+42,product_bought_count,"for each user, how many products he/her has bought",user
+43,dept_bought_from,number of departments have purchased from for the user,user
+44,aisle_bought_from,number of aisles have purchased from for the user,user
+45,unique_user_count_product,the number of users who have bought this product,product
+46,unique_user_count_dept,the number of users who have bought in this department,department
+47,unique_user_count_aisle,the number of users who have bought from this aisle,aisle
+48,days_since_last_purch_dept,how many days since the user purchases from this department last time,"user,dept"
+49,days_since_last_purch_aisle,how many days since the user purchases from this aisle last time,"user,aisle"
+50,unique_reorder_user_count_product,the number of unique users who have reordered this product,product
+51,reorder_user_percent,the percentage of users who have reordered this product after they ordered once,product
+52,avg_order_size_product,average order size of the orders containing this product,product
+53,prod_count,how many times this product has been purchased,product
+54,avg_prod_order_times,"on average, for the users who have bought this product, how many times they have purchased it",product
+55,prod_favorite_dow,the dow that most of the purchase of this product occurred,product
+56,on_prod_favorite_dow,whether this order weekday is the product's mostly bought weekday,product
+57,prod_favorite_hod,the hour of day that this product was purchased most,product
+58,from_prod_favorite_hod,how many hours the hour of the day of this order is from the favorite hod of this product,product
+59,from_favorite_hod,how many hours this order hour is  from the user's favorite hour,user
+60,from_highest_reorder_hod,how many hours this order hour is from the user's highest reorder frequency hour,user
+61,bought_last_1_order,"in this user's last order, this product was purchased","user, product"
+62,bought_last_3_order,"in this user's last 3 orders, this product was purchased","user, product"
+63,bought_last_1_month,whether this user has purchased this product in last 1 month,"user, product"
+64,bought_last_2_month,whether this user has purchased this product in last 2 months,"user, product"
