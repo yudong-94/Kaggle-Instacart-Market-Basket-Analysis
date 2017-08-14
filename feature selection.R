@@ -98,7 +98,7 @@ mean_f1 = data.frame(level = numeric(0),
                      threshold = numeric(0), 
                      mean_f1 = numeric(0))
 
-# turn colsample_bylevel
+# tune colsample_bylevel
 for (level in seq(0.3, 0.5, 0.2)) {
     params <- list(booster = "gbtree", objective = "binary:logistic", 
                    eta=0.1, gamma=0, max_depth=6, 
