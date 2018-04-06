@@ -18,7 +18,7 @@ The objective of this competition is to predict the products that a certaion use
 ## Documentation
 
 ### 1st Part: EDA and Feature Engineering
-This part includes an initial EDA file [EDA.rmd](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/EDA.Rmd), 3 phases of feature engineerings - [phase1](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering.R), [phase2](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering%202.R), [phase3](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering%203.R). Each one of them relies on the result from the previous one.
+This part includes an initial EDA file [EDA.rmd](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/Feature%20Engineering/EDA.Rmd), 3 phases of feature engineerings - [phase1](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering.R), [phase2](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering%202.R), [phase3](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/feature%20engineering%203.R). Each one of them relies on the result from the previous one.
 
 ### 2nd Part: Modeling (xgboost) & Prediction
 To tune parameters and select features, I have tried several ways. At first, I used a single validation set and tune based on F1 score (please refer to [modeling.R](https://github.com/yudong-94/Kaggle-Instacart-Market-Basket-Analysis/blob/master/modeling.R)).
